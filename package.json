@@ -5,6 +5,11 @@
   "scripts": {
     "install:server": "cd server && npm install",
     "start": "cd server && npm start",
-    "dev": "cd server && npm run dev"
+    "dev": "cd server && npm run dev",
+    "test:e2e:ui": "playwright test",
+    "test:perf:smoke": "node performance/run-smoke.js"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.48.0"
   }
 }
