@@ -1,0 +1,50 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "Dev Factory: TDD Feature Workflow",
+    "animation": "trace",
+    "visual_preset": "signal-flow",
+    "quality_profile": "showcase",
+    "output": "dev-factory-workflow.html",
+    "views": [
+      { "id": "happy-path", "label": "Idea to hand-off", "focus": ["idea", "context_collector", "planner", "test_writer", "implementor", "mvp_test_factory"], "note": "Follow a feature from a rough idea to the test-factory hand-off." },
+      { "id": "checkpoints", "label": "Human checkpoints", "focus": ["plan_approval", "quality_review"], "note": "See the two points where a human must approve before work continues." }
+    ]
+  },
+  "lanes": [
+    { "id": "flow", "label": "Dev Factory Orchestrator" },
+    { "id": "checkpoints", "label": "Human Checkpoints", "variant": "exception" }
+  ],
+  "phases": [
+    { "id": "research", "label": "Research", "fromCol": 0, "toCol": 1 },
+    { "id": "design", "label": "Design + Approval", "fromCol": 2, "toCol": 2, "variant": "emphasis" },
+    { "id": "tdd", "label": "TDD Red/Green + Review", "fromCol": 3, "toCol": 4, "variant": "dashed" },
+    { "id": "validate", "label": "Validation + Hand-off", "fromCol": 5, "toCol": 5 }
+  ],
+  "nodes": [
+    { "id": "idea", "lane": "flow", "col": 0, "type": "external", "label": "Feature Idea", "sublabel": "rough request", "width": 118 },
+    { "id": "context_collector", "lane": "flow", "col": 1, "type": "frontend", "label": "Context Collector", "sublabel": "map codebase + requirements", "width": 132 },
+    { "id": "planner", "lane": "flow", "col": 2, "type": "backend", "label": "Planner", "sublabel": "technical design", "width": 118 },
+    { "id": "test_writer", "lane": "flow", "col": 3, "type": "frontend", "label": "Test Writer", "sublabel": "failing tests (red)", "width": 132 },
+    { "id": "implementor", "lane": "flow", "col": 4, "type": "backend", "label": "Implementor", "sublabel": "pass the tests (green)", "width": 132 },
+    { "id": "mvp_test_factory", "lane": "flow", "col": 5, "type": "backend", "label": "MVP Test Factory", "sublabel": "API/UI/perf validation", "tag": "final hand-off", "width": 140 },
+    { "id": "plan_approval", "lane": "checkpoints", "col": 2, "type": "security", "label": "Plan Approval", "sublabel": "human checkpoint", "width": 118 },
+    { "id": "quality_review", "lane": "checkpoints", "col": 4, "type": "security", "label": "Quality Review", "sublabel": "reviewer + human", "width": 132 }
+  ],
+  "edges": [
+    { "id": "idea-context", "from": "idea", "to": "context_collector", "variant": "default" },
+    { "id": "context-planner", "from": "context_collector", "to": "planner", "label": "research", "variant": "default" },
+    { "id": "planner-approval", "from": "planner", "to": "plan_approval", "label": "propose plan", "variant": "security", "role": "branch" },
+    { "id": "approval-test", "from": "plan_approval", "to": "test_writer", "label": "approved", "variant": "emphasis", "role": "branch" },
+    { "id": "test-implement", "from": "test_writer", "to": "implementor", "label": "red to green", "variant": "emphasis" },
+    { "id": "implement-review", "from": "implementor", "to": "quality_review", "label": "review", "variant": "security", "role": "branch" },
+    { "id": "review-revise", "from": "quality_review", "to": "implementor", "label": "revise", "variant": "dashed", "role": "error" },
+    { "id": "review-handoff", "from": "quality_review", "to": "mvp_test_factory", "label": "approved", "variant": "emphasis", "role": "branch" }
+  ],
+  "cards": [
+    { "dot": "cyan", "title": "One orchestrator, six building blocks", "items": ["Dev Factory delegates every step; it never writes code itself", "context-collector, planner, test-writer, implementor, and reviewer each own one phase", "The final phase hands off to the MVP Test Factory orchestrator"] },
+    { "dot": "rose", "title": "Two required human checkpoints", "items": ["The technical design must be approved before any test is written", "The final review can send work back to the Implementor for another pass", "Neither checkpoint is optional in the workflow definition"] },
+    { "dot": "emerald", "title": "TDD, not code-then-test", "items": ["Test Writer always runs before Implementor", "A failing test (red) is required evidence before implementation starts", "Validation only begins after the reviewer signs off"] }
+  ]
+}

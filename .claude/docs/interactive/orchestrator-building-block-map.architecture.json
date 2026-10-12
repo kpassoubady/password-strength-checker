@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Claude Helper: Orchestrators and Building Blocks",
+    "output": "orchestrator-building-block-map.html",
+    "quality_profile": "showcase",
+    "views": [
+      { "id": "dev-factory-path", "label": "Dev Factory path", "focus": ["dev_factory", "writers", "planners", "reviewers", "testers", "mvp_test_factory"], "note": "Follow one feature from research through TDD to the test-factory hand-off." },
+      { "id": "shared-blocks", "label": "Shared building blocks", "focus": ["other_orchestrators", "reviewers", "analyzers", "utilities"], "note": "See how the remaining orchestrators reuse the same reviewer, analyzer, and utility agents." }
+    ]
+  },
+  "components": [
+    { "id": "dev_factory", "type": "backend", "label": "Dev Factory", "sublabel": "Build a feature (TDD)", "tag": "orchestrator", "pos": [20, 150], "size": [190, 64] },
+    { "id": "planners", "type": "frontend", "label": "Planners", "sublabel": "planner", "tag": "building block", "pos": [280, 150], "size": [150, 64] },
+    { "id": "reviewers", "type": "frontend", "label": "Reviewers", "sublabel": "reviewer", "tag": "building block", "pos": [500, 150], "size": [150, 64] },
+    { "id": "testers", "type": "frontend", "label": "Testers", "sublabel": "test-writer, implementor", "tag": "building block", "pos": [720, 150], "size": [190, 64] },
+    { "id": "mvp_test_factory", "type": "backend", "label": "MVP Test Factory", "sublabel": "Build the test foundation", "tag": "orchestrator", "pos": [980, 150], "size": [200, 64] },
+    { "id": "writers", "type": "frontend", "label": "Writers", "sublabel": "context-collector", "tag": "building block", "pos": [20, 340], "size": [150, 64] },
+    { "id": "other_orchestrators", "type": "backend", "label": "Other Orchestrators", "sublabel": "code-reviewer, review-pr, perf-audit", "tag": "orchestrators", "pos": [460, 340], "size": [230, 64] },
+    { "id": "analyzers", "type": "frontend", "label": "Analyzers", "sublabel": "security, performance, a11y", "tag": "building block", "pos": [800, 340], "size": [190, 64] },
+    { "id": "utilities", "type": "frontend", "label": "Utilities", "sublabel": "model-selector, pr-creator", "tag": "building block", "pos": [1030, 340], "size": [200, 64] }
+  ],
+  "connections": [
+    { "id": "dev-writers", "from": "dev_factory", "to": "writers", "label": "research", "fromSide": "bottom", "toSide": "top" },
+    { "id": "dev-planners", "from": "dev_factory", "to": "planners", "label": "design" },
+    { "id": "planners-reviewers", "from": "planners", "to": "reviewers", "label": "approve plan" },
+    { "id": "reviewers-testers", "from": "reviewers", "to": "testers", "label": "TDD red/green" },
+    { "id": "testers-mvp", "from": "testers", "to": "mvp_test_factory", "label": "hand off", "variant": "emphasis" },
+    { "id": "mvp-utilities", "from": "mvp_test_factory", "to": "utilities", "label": "shared utilities", "fromSide": "bottom", "toSide": "top", "labelAt": [1080, 228] },
+    { "id": "other-reviewers", "from": "other_orchestrators", "to": "reviewers", "label": "code review", "fromSide": "top", "toSide": "bottom" },
+    { "id": "other-analyzers", "from": "other_orchestrators", "to": "analyzers", "label": "static analysis" }
+  ],
+  "cards": [
+    { "dot": "cyan", "title": "Two layers of agents", "items": ["Orchestrators own one full workflow end to end", "Building blocks are single-purpose and reusable across orchestrators", "A building block never calls an orchestrator"] },
+    { "dot": "emerald", "title": "Dev Factory is the main loop", "items": ["Research \u2192 design \u2192 reviewer approval \u2192 TDD red/green loop", "Hands off to MVP Test Factory once code is integrated", "Human approval required at the design and final review checkpoints"] },
+    { "dot": "violet", "title": "Shared building blocks", "items": ["Reviewers, analyzers, and utilities are reused by code-reviewer, review-pr, perf-audit, and increase-coverage too", "They are not one-off helpers reserved for Dev Factory", "Model selection is itself a building-block utility, not a one-off decision"] }
+  ]
+}
