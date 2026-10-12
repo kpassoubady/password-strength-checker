@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Claude Helper: Repository Architecture",
+    "output": "repo-architecture-overview.html",
+    "quality_profile": "showcase",
+    "viewBox": [1340, 680],
+    "views": [
+      { "id": "source-modules", "label": "Source modules", "focus": ["rules", "commands", "agents", "skills", "hooks", "plugins", "docs"], "note": "Seven self-contained folders, each a different kind of Claude Code customization." },
+      { "id": "install-path", "label": "Install path", "focus": ["agents", "skills", "install", "claude_dir", "session"], "note": "Follow one module from the repo, through the installer, into a live session." }
+    ]
+  },
+  "components": [
+    { "id": "rules", "type": "security", "label": "Rules", "sublabel": "Behavior directives", "pos": [40, 40], "size": [150, 64] },
+    { "id": "commands", "type": "frontend", "label": "Commands", "sublabel": "/review /pr /changelog", "pos": [220, 40], "size": [150, 64] },
+    { "id": "agents", "type": "backend", "label": "Agents", "sublabel": "Orchestrators + blocks", "pos": [400, 40], "size": [150, 64] },
+    { "id": "skills", "type": "backend", "label": "Skills", "sublabel": "Orchestrated workflows", "pos": [580, 40], "size": [150, 64] },
+    { "id": "hooks", "type": "messagebus", "label": "Hooks", "sublabel": "Pre/Post tool-use scripts", "pos": [760, 40], "size": [150, 64] },
+    { "id": "plugins", "type": "cloud", "label": "Plugins", "sublabel": "Packaged extensions", "pos": [940, 40], "size": [150, 64] },
+    { "id": "docs", "type": "database", "label": "Docs", "sublabel": "Reference guides", "pos": [1140, 40], "size": [150, 64] },
+    { "id": "install", "type": "backend", "label": "install.sh / install.ps1", "sublabel": "One-time installer", "tag": "skip-existing by default", "pos": [475, 230], "size": [190, 68] },
+    { "id": "claude_dir", "type": "database", "label": "~/.claude/", "sublabel": "Installed configuration", "pos": [475, 400], "size": [190, 64] },
+    { "id": "session", "type": "external", "label": "Claude Code Session", "sublabel": "Loads rules, agents, skills, hooks", "pos": [460, 560], "size": [220, 64] }
+  ],
+  "boundaries": [
+    { "kind": "region", "label": "claude-helper repository (git clone)", "wraps": ["rules", "commands", "agents", "skills", "hooks", "plugins", "docs", "install"] }
+  ],
+  "connections": [
+    { "id": "rules-install", "from": "rules", "to": "install", "label": "copy" },
+    { "id": "commands-install", "from": "commands", "to": "install", "label": "copy" },
+    { "id": "agents-install", "from": "agents", "to": "install", "label": "copy", "variant": "emphasis", "fromSide": "bottom", "toSide": "top" },
+    { "id": "skills-install", "from": "skills", "to": "install", "label": "copy", "variant": "emphasis", "fromSide": "bottom", "toSide": "top" },
+    { "id": "hooks-install", "from": "hooks", "to": "install", "label": "copy" },
+    { "id": "plugins-install", "from": "plugins", "to": "install", "label": "copy" },
+    { "id": "docs-install", "from": "docs", "to": "install", "label": "copy" },
+    { "id": "install-target", "from": "install", "to": "claude_dir", "label": "./install.sh", "variant": "emphasis", "labelAt": [660, 334] },
+    { "id": "target-session", "from": "claude_dir", "to": "session", "label": "loaded each session", "variant": "emphasis", "labelAt": [670, 500] }
+  ],
+  "cards": [
+    { "dot": "cyan", "title": "Portable by design", "items": ["One repo, cloned anywhere, installs into ~/.claude/", "Existing files are preserved by default; -f forces overwrite", "Dry run (-d) previews changes with no copying"] },
+    { "dot": "emerald", "title": "Seven independent modules", "items": ["Each folder (rules, commands, agents, skills, hooks, plugins, docs) can be installed alone", "./install.sh rules commands installs only what you name", "Drop a new .md into the right folder and re-run the installer to go live"] },
+    { "dot": "violet", "title": "Skills sit above agents", "items": ["Skills are invokable workflows backed by reusable agent definitions", "Agents split into orchestrators (own a workflow) and building blocks (single-purpose)", "Hooks run automatically on tool-use events; nothing has to invoke them"] }
+  ]
+}
