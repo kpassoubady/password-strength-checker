@@ -1,0 +1,49 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "MVP Test Factory: Test Foundation Workflow",
+    "animation": "trace",
+    "visual_preset": "signal-flow",
+    "quality_profile": "showcase",
+    "output": "mvp-test-factory-workflow.html",
+    "views": [
+      { "id": "setup-path", "label": "Discover to unit baseline", "focus": ["discover_scope", "bootstrap", "unit_charter"], "note": "Shared setup has one owner, gated by two human approvals, before any parallel work starts." },
+      { "id": "parallel-authoring", "label": "Parallel gates and review", "focus": ["api_writer", "ui_writer", "perf_writer", "gates", "human_review"], "note": "Three independent test-writing paths feed one fixed-order gate sequence." }
+    ]
+  },
+  "lanes": [
+    { "id": "pipeline", "label": "MVP Test Factory Orchestrator" },
+    { "id": "tests", "label": "Parallel Test-Authoring Paths" }
+  ],
+  "phases": [
+    { "id": "setup", "label": "Discover + Bootstrap + Baseline", "fromCol": 0, "toCol": 2 },
+    { "id": "parallel", "label": "Parallel Authoring", "fromCol": 3, "toCol": 3, "variant": "dashed" },
+    { "id": "review", "label": "Ordered Gates + Review", "fromCol": 4, "toCol": 5 }
+  ],
+  "nodes": [
+    { "id": "discover_scope", "lane": "pipeline", "col": 0, "type": "security", "label": "Discover + Scope", "sublabel": "inspect, then approve", "tag": "human checkpoint", "width": 160, "height": 68 },
+    { "id": "bootstrap", "lane": "pipeline", "col": 1, "type": "backend", "label": "Bootstrap", "sublabel": "shared deps + config", "width": 132 },
+    { "id": "unit_charter", "lane": "pipeline", "col": 2, "type": "security", "label": "Unit + Charter", "sublabel": "pass, then approve", "tag": "human checkpoint", "width": 160, "height": 68 },
+    { "id": "gates", "lane": "pipeline", "col": 4, "type": "database", "label": "Ordered Gates", "sublabel": "build, unit, API, UI, k6", "tag": "fixed order", "width": 140 },
+    { "id": "human_review", "lane": "pipeline", "col": 5, "type": "external", "label": "Evidence Review", "sublabel": "human verdict", "width": 128 },
+    { "id": "api_writer", "lane": "tests", "col": 3, "type": "frontend", "label": "API Test Writer", "sublabel": "status + body + errors", "width": 140, "yOffset": -66 },
+    { "id": "ui_writer", "lane": "tests", "col": 3, "type": "frontend", "label": "UI Test Writer", "sublabel": "Playwright flow", "width": 140, "yOffset": 0 },
+    { "id": "perf_writer", "lane": "tests", "col": 3, "type": "frontend", "label": "k6 Test Writer", "sublabel": "local load smoke", "width": 140, "yOffset": 66 }
+  ],
+  "edges": [
+    { "id": "discover-bootstrap", "from": "discover_scope", "to": "bootstrap", "label": "approved", "variant": "emphasis" },
+    { "id": "bootstrap-unit", "from": "bootstrap", "to": "unit_charter", "variant": "emphasis" },
+    { "id": "charter-api", "from": "unit_charter", "to": "api_writer", "label": "author in parallel", "variant": "dashed", "role": "branch" },
+    { "id": "charter-ui", "from": "unit_charter", "to": "ui_writer", "variant": "dashed", "role": "branch", "fromSide": "bottom", "toSide": "left" },
+    { "id": "charter-perf", "from": "unit_charter", "to": "perf_writer", "variant": "dashed", "role": "branch" },
+    { "id": "api-gates", "from": "api_writer", "to": "gates", "variant": "default" },
+    { "id": "ui-gates", "from": "ui_writer", "to": "gates", "variant": "default" },
+    { "id": "perf-gates", "from": "perf_writer", "to": "gates", "label": "load last", "variant": "default" },
+    { "id": "gates-review", "from": "gates", "to": "human_review", "label": "evidence + risks", "variant": "emphasis" }
+  ],
+  "cards": [
+    { "dot": "cyan", "title": "Shared setup has one owner", "items": ["Manifests and config cannot be safely parallelized", "Two human checkpoints gate scope and the E2E charter"] },
+    { "dot": "amber", "title": "Gates run in a fixed order", "items": ["API, UI, and k6 tests are written in parallel, then gated build \u2192 unit \u2192 API \u2192 UI \u2192 k6", "Load testing runs last so it cannot distort evidence"] }
+  ]
+}

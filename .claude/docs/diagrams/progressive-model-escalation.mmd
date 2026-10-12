@@ -1,0 +1,18 @@
+%%{init: {"flowchart": {"wrappingWidth": 420}, "themeVariables": {"fontSize": "20px", "fontFamily": "Inter, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif", "primaryColor": "#e3f2fd", "primaryTextColor": "#1e293b", "primaryBorderColor": "#1a73e8", "lineColor": "#1a73e8", "secondaryColor": "#fff3e0", "tertiaryColor": "#e8f5e9", "background": "#ffffff", "edgeLabelBackground": "#ffffff", "clusterBkg": "#f5f7fa", "clusterBorder": "#e2e8f0", "titleColor": "#1a73e8"}}}%%
+flowchart TB
+    CLASSIFY["<b>Classify the task</b><br/>choose the cheapest capable model"] --> EXECUTE["<b>Execute</b><br/>produce a bounded result"]
+    EXECUTE --> VERIFY{"<b>Evidence acceptable?</b><br/>tests, checks, or review"}
+    VERIFY -- "yes" --> DONE["<b>Record the outcome</b><br/>quality, cost, and latency"]
+    VERIFY -- "no" --> DIAGNOSE{"<b>Why did it fail?</b>"}
+    DIAGNOSE -- "missing context" --> EVIDENCE["<b>Gather better evidence</b><br/>clarify scope and constraints"]
+    DIAGNOSE -- "insufficient capability" --> ESCALATE["<b>Escalate one tier</b><br/>Haiku to Sonnet to Opus"]
+    EVIDENCE -. "retry" .-> EXECUTE
+    ESCALATE -. "retry" .-> EXECUTE
+
+    style CLASSIFY fill:#e3f2fd,stroke:#1a73e8
+    style EXECUTE fill:#fff3e0,stroke:#e65100
+    style VERIFY fill:#fff3e0,stroke:#e65100
+    style DONE fill:#e8f5e9,stroke:#2e7d32
+    style DIAGNOSE fill:#fce4ec,stroke:#c62828
+    style EVIDENCE fill:#e3f2fd,stroke:#1a73e8
+    style ESCALATE fill:#f3e5f5,stroke:#7b1fa2
