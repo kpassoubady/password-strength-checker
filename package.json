@@ -5,6 +5,14 @@
   "scripts": {
     "install:server": "cd server && npm install",
     "start": "cd server && npm start",
-    "dev": "cd server && npm run dev"
+    "dev": "cd server && npm run dev",
+    "test:unit": "cd server && npm test",
+    "test:api": "playwright test -c e2e/playwright.config.ts --project=api",
+    "test:ui": "playwright test -c e2e/playwright.config.ts --project=ui",
+    "test:perf": "node e2e/perf/run-smoke.js",
+    "test": "npm run test:unit && npm run test:api && npm run test:ui && npm run test:perf"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.64.0"
   }
 }
