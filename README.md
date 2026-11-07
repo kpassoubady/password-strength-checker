@@ -12,7 +12,17 @@ npm start          # Server on http://localhost:3000
 
 The server serves the frontend directly — open **<http://localhost:3000>** in your browser to use the app.
 
+## Demo
 
+![Password Strength Checker Demo](docs/media/demo.gif)
+
+| State | Screenshot |
+|-------|------------|
+| Empty | ![Empty state](docs/media/01-empty.png) |
+| Weak (`abc`) | ![Weak password](docs/media/02-weak.png) |
+| Fair (`MyPassword`) | ![Fair password](docs/media/03-fair.png) |
+| Strong (`MyPass123!`) | ![Strong password](docs/media/04-strong.png) |
+| Very Strong (`MyP@ssw0rd123!xyz`) | ![Very strong password](docs/media/05-very-strong.png) |
 
 ## Project Structure
 
